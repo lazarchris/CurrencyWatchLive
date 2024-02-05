@@ -1,19 +1,24 @@
 import requests
 import logging
+import warnings
 
 
 class CurrencyConverter:
     BASE_URL = "https://currency-exchange.p.rapidapi.com/exchange"
 
     def __init__(self, api_key):
-        self.api_key = api_key
-        self.headers = {
+        self._api_key = api_key
+        self._headers = {
             "X-RapidAPI-Key": api_key,
             "X-RapidAPI-Host": "currency-exchange.p.rapidapi.com",
         }
 
     def _make_request(self, params):
-        response = requests.get(self.BASE_URL, headers=self.headers, params=params)
+        # walkaround: remove later, silence InsecureRequestWarning
+        requests.packages.urllib3.disable_warnings()
+        response = requests.get(
+            self.BASE_URL, headers=self._headers, params=params, verify=False
+        )
         return (
             response.status_code,
             response.json() if response.status_code == 200 else None,
@@ -33,8 +38,10 @@ class CurrencyConverter:
         exchange_rate = self.get_exchange_rate(from_currency, to_currency, amount)
 
         if exchange_rate:
-            logging.info(
+            logging.debug(
                 f"Exchange rate from {from_currency} to {to_currency} for {amount} is: {exchange_rate}"
             )
         else:
             logging.warning("Failed to retrieve exchange rate.")
+
+        return exchange_rate
