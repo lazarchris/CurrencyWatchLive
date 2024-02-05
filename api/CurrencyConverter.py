@@ -16,9 +16,7 @@ class CurrencyConverter:
     def _make_request(self, params):
         # walkaround: remove later, silence InsecureRequestWarning
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(
-            self.BASE_URL, headers=self._headers, params=params, verify=False
-        )
+        response = requests.get(self.BASE_URL, headers=self._headers, params=params, verify=False)
         return (
             response.status_code,
             response.json() if response.status_code == 200 else None,

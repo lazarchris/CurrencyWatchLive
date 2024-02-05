@@ -18,9 +18,7 @@ def consume_exchange_rates(consumer):
         logging.info("Consumer thread terminated by user.")
 
 
-def publish_exchange_rates(
-    converter, producer, currencies, to_currency, amount, query_interval
-):
+def publish_exchange_rates(converter, producer, currencies, to_currency, amount, query_interval):
     try:
         while True:
             for from_currency in currencies:
