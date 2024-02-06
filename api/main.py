@@ -31,15 +31,14 @@ def publish_exchange_rates(converter, producer, currencies, to_currency, amount,
                         "to_currency": to_currency,
                         "rate": exchange_rate,
                     }
-                    producer.send_to_kafka_topic(message)
+                    producer.send_to_kafka_topic({'msg': message})
             time.sleep(query_interval)
     except KeyboardInterrupt:
         logging.info("Exchange rate publishing terminated by user.")
 
 
-def start_app(server):
+def start_app(server, topic):
     api_key = "64f575c77dmshbeab56d45cba627p1a86bdjsn0cc5c5a4d56c"
-    topic = "topic_currency_exch_rate"
     converter = CurrencyConverter(api_key)
     producer = Producer(server, topic)
     consumer = Consumer(topic, server)
@@ -69,4 +68,5 @@ def start_app(server):
 
 if __name__ == "__main__":
     configure_logging()
-    start_app("localhost:9092")
+    topic = "topic_currency_exch_rate"
+    start_app("localhost:9092", topic)
