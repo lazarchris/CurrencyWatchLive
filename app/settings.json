@@ -1,0 +1,28 @@
+{
+    "kafka": {
+        "host": "localhost",
+        "port": 9092,
+        "topic": "topic_currency_exch_rate",
+        "publish_interval": 10,
+        "start_consumer": true
+    },
+    "currency_converter": {
+        "url": "https://currency-exchange.p.rapidapi.com/exchange",
+        "api_host": "currency-exchange.p.rapidapi.com",
+        "api_key": "64f575c77dmshbeab56d45cba627p1a86bdjsn0cc5c5a4d56c",
+        "from_currencies_list": [
+            "EUR",
+            "JPY",
+            "GBP",
+            "AUD",
+            "CAD"
+        ],
+        "to_currency": "USD",
+        "amount": 1
+    },
+    "spark": {
+        "package_name": "org.apache.spark:spark-sql-kafka-0-10_2.12",
+        "package_version": "3.5.0",
+        "spark_script_path": "./app/spark_streamer/spark_streamer.py"
+    }
+}
