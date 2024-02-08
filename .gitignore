@@ -1,4 +1,5 @@
 venv/
-api/__pycache__/
+app/kafka_publisher/__pycache__/
+app/kafka_publisher/api/__pycache__/
 output_csv/
 checkpoint_csv/
