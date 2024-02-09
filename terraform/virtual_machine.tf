@@ -1,5 +1,6 @@
+
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "fsm_machine"
+  name                = "fsm-machine"
   resource_group_name = var.resource_group_name
   location            = var.location
   size                = "Standard_F2"
