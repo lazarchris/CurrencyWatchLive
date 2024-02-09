@@ -1,0 +1,31 @@
+name: Deploy Spark Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: SSH into virtual machine and deploy application
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_STATIC_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            scp -r ./app adminuser@${{ secrets.VM_STATIC_IP }}:
+            scp -r ./start.sh adminuser@${{ secrets.VM_STATIC_IP }}:
+            # Add more deployment commands as needed
