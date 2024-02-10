@@ -1,21 +1,21 @@
 import os
 from datetime import datetime
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json
-from pyspark.sql.types import StructType, StringType, DoubleType
+from pyspark.sql.functions import from_json, col, concat_ws
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType
 
-class KafkaToCSV:
+class KafkaToTextFile:
     """
-    Class to read data from Kafka topic, parse JSON messages, and write to CSV files using Apache Spark.
+    Class to read data from Kafka topic, parse JSON messages, and append to a text file using Apache Spark.
     """
 
     def __init__(self, kafka_bootstrap_servers, kafka_topic, output_path):
         """
-        Initialize KafkaToCSV object.
+        Initialize KafkaToTextFile object.
 
         :param kafka_bootstrap_servers: Comma-separated list of Kafka bootstrap servers.
         :param kafka_topic: Kafka topic to subscribe to.
-        :param output_path: Output path to write CSV files.
+        :param output_path: Output path to write text files.
         """
         self.kafka_bootstrap_servers = kafka_bootstrap_servers
         self.kafka_topic = kafka_topic
@@ -29,7 +29,7 @@ class KafkaToCSV:
         :return: SparkSession object.
         """
         return SparkSession.builder \
-            .appName("KafkaToCSV") \
+            .appName("KafkaToTextFile") \
             .getOrCreate()
 
     def _read_from_kafka(self):
@@ -38,11 +38,15 @@ class KafkaToCSV:
 
         :return: Parsed DataFrame.
         """
-        schema = StructType() \
-            .add("msg", StructType() \
-                .add("from_currency", StringType()) \
-                .add("to_currency", StringType()) \
-                .add("rate", DoubleType()))
+        schema = StructType([
+            StructField("msg", StructType([
+                StructField("rate", StructType([
+                    StructField("from_currency", StringType()),
+                    StructField("to_currency", StringType()),
+                    StructField("rate", DoubleType())
+                ]))
+            ]))
+        ])
 
         df = self.spark \
             .readStream \
@@ -54,44 +58,40 @@ class KafkaToCSV:
 
         parsed_df = df.selectExpr("CAST(value AS STRING)") \
             .select(from_json("value", schema).alias("data")) \
-            .select("data.msg.*")
+            .select("data.msg.rate.*")
 
         return parsed_df
 
-    def _write_to_csv(self, parsed_df):
+    def _write_to_text_file(self, batch_df, batch_id):
         """
-        Write DataFrame to CSV file.
+        Append each batch DataFrame to a text file.
 
-        :param parsed_df: DataFrame to write.
+        :param batch_df: DataFrame representing a batch of data.
+        :param batch_id: ID of the batch.
         """
-        # Get current date in YYYY-MM-DD format
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        
-        # Combine output path with current date
-        output_file_path = os.path.join(self.output_path, current_date)
+        # Concatenate column values into a single string with delimiter ','
+        concatenated_df = batch_df.withColumn("data", concat_ws(",", col("from_currency"), col("to_currency"), col("rate")))
 
-        # Write DataFrame to CSV file
-        query = parsed_df \
-            .writeStream \
-            .outputMode("append") \
-            .format("csv") \
-            .option("path", output_file_path) \
-            .option("checkpointLocation", "checkpoint_csv") \
-            .start()
+        # Select only the concatenated column for writing to text file
+        selected_df = concatenated_df.select("data")
 
-        query.awaitTermination()
+        # Append the batch DataFrame to the text file
+        selected_df.write.mode("append").text(self.output_path)
 
-    def process_kafka_to_csv(self):
+    def process_kafka_to_text_file(self):
         """
-        Main method to process data from Kafka topic and write to CSV files.
+        Main method to process data from Kafka topic and append to a text file.
         """
         parsed_df = self._read_from_kafka()
-        self._write_to_csv(parsed_df)
+
+        # Append each batch of data to the text file
+        query = parsed_df.writeStream.foreachBatch(self._write_to_text_file).start()
+        query.awaitTermination()
 
 if __name__ == "__main__":
     kafka_bootstrap_servers = "localhost:9092"
     kafka_topic = "topic_currency_exch_rate"
-    output_path = "output_csv"
+    output_path = "output_text"
 
-    kafka_to_csv = KafkaToCSV(kafka_bootstrap_servers, kafka_topic, output_path)
-    kafka_to_csv.process_kafka_to_csv()
+    kafka_to_text_file = KafkaToTextFile(kafka_bootstrap_servers, kafka_topic, output_path)
+    kafka_to_text_file.process_kafka_to_text_file()
