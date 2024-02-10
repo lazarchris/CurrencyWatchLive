@@ -64,7 +64,7 @@ class KafkaToTextFile:
 
     def _write_to_text_file(self, batch_df, batch_id):
         """
-        Append each batch DataFrame to a text file.
+        Write DataFrame to a single text file.
 
         :param batch_df: DataFrame representing a batch of data.
         :param batch_id: ID of the batch.
@@ -72,26 +72,27 @@ class KafkaToTextFile:
         # Concatenate column values into a single string with delimiter ','
         concatenated_df = batch_df.withColumn("data", concat_ws(",", col("from_currency"), col("to_currency"), col("rate")))
 
-        # Select only the concatenated column for writing to text file
+        # Select only the concatenated column
         selected_df = concatenated_df.select("data")
 
-        # Append the batch DataFrame to the text file
-        selected_df.write.mode("append").text(self.output_path)
+        # Write DataFrame to text file
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        output_file = os.path.join(self.output_path, f"output_{current_date}.txt")
+        selected_df.coalesce(1).write.mode("append").text(output_file)
 
     def process_kafka_to_text_file(self):
         """
-        Main method to process data from Kafka topic and append to a text file.
+        Main method to process data from Kafka topic and write to a single text file.
         """
         parsed_df = self._read_from_kafka()
 
-        # Append each batch of data to the text file
-        query = parsed_df.writeStream.foreachBatch(self._write_to_text_file).start()
-        query.awaitTermination()
+        # Process the DataFrame and write to a single text file
+        parsed_df.writeStream.foreachBatch(self._write_to_text_file).start().awaitTermination()
 
 if __name__ == "__main__":
     kafka_bootstrap_servers = "localhost:9092"
     kafka_topic = "topic_currency_exch_rate"
-    output_path = "output_text"
+    output_path = "output_text"  # Output folder
 
     kafka_to_text_file = KafkaToTextFile(kafka_bootstrap_servers, kafka_topic, output_path)
     kafka_to_text_file.process_kafka_to_text_file()
