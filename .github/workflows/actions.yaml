@@ -1,10 +1,8 @@
 name: Deploy Spark Application
-
 on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,4 +26,3 @@ jobs:
           script: |
             scp -r ./app adminuser@${{ secrets.VM_STATIC_IP }}:
             scp -r ./start.sh adminuser@${{ secrets.VM_STATIC_IP }}:
-            # Add more deployment commands as needed
