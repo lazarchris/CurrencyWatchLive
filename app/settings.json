@@ -21,6 +21,8 @@
         "amount": 1
     },
     "spark": {
+        "host": "localhost",
+        "port": 9092,
         "package_name": "org.apache.spark:spark-sql-kafka-0-10_2.12",
         "package_version": "3.5.0",
         "spark_script_path": "./app/spark_streamer/spark_streamer.py"
