@@ -33,7 +33,6 @@ else
     kafka_scala_version="2.13"
     kafka_download_url="https://dlcdn.apache.org/kafka/${kafka_version}/kafka_${kafka_scala_version}-${kafka_version}.tgz"
     kafka_tar_file="kafka_${kafka_scala_version}-${kafka_version}.tgz"
-    kafka_dir="kafka_${kafka_scala_version}-${kafka_version}"
 
     # Download Kafka to home directory
     echo "Downloading Kafka ${kafka_version}..."
@@ -42,15 +41,6 @@ else
     # Extract Kafka archive in home directory
     echo "Extracting Kafka archive..."
     tar -xzf "$HOME/${kafka_tar_file}" -C "$HOME/"
-
-    # Start Zookeeper server
-    echo "Starting Zookeeper server..."
-    cd "$HOME/${kafka_dir}" || exit
-    bin/zookeeper-server-start.sh config/zookeeper.properties &
-
-    # Start Kafka server
-    echo "Starting Kafka server..."
-    bin/kafka-server-start.sh config/server.properties &
 
     # Mark dependencies as installed
     echo "Dependencies installed: ok" > "$dependencies_installed"
