@@ -49,7 +49,7 @@ This table lists various resources along with their types and locations.
 | fsm-machine                           | Virtual machine     | France Central |
 | fsm-bastion                           | Bastion             | France Central |
 
-![Image Description](../doc/images/resource.png)
+![Image Description](../docs/images/resource.png)
 
 ## Azure Bastion and Virtual Machine Setup Documentation
 

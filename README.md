@@ -118,4 +118,15 @@ CurrencyWatchLive/
    ./start-app.sh
    ```
 
+
+## Result
+### App starting on the virtual machine on azure cloud
+
+![Image Description](./docs/images/sample-vm-app-running.png)
+
+### App output
+Currency exchange rates live
+
+![Image Description](docs/images/output-currency-values.png)
+
 Ensure that you have the necessary permissions and configurations set up in your Azure account, and that you have replaced placeholders like `git@github.com:lazarchris/CurrencyWatchLive.git` with the actual repository URL.
