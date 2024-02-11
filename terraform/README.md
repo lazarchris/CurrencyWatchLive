@@ -34,8 +34,9 @@ Before you begin, ensure you have the following:
 
 6. Once the deployment is complete, note down the public IP address of the virtual machine.
 
+# Results
 ---
-## List of Resources
+## List of Resources 
 This table lists various resources along with their types and locations. 
 
 | NAME                                  | TYPE                | LOCATION       |
