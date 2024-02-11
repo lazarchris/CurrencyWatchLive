@@ -42,8 +42,20 @@ else
     echo "Extracting Kafka archive..."
     tar -xzf "$HOME/${kafka_tar_file}" -C "$HOME/"
 
+    # Check if venv exists and delete it if it does
+    if [ -d "venv" ]; then
+        echo "Deleting existing venv..."
+        rm -rf venv
+    fi
+
+    # Create and activate a new virtual environment
+    echo "Creating new venv..."
+    python3 -m venv venv
+    source venv/bin/activate
 
     pip install pyspark
+    pip install -r requirements.txt
+
 
     # Mark dependencies as installed
     echo "Dependencies installed: ok" > "$dependencies_installed"

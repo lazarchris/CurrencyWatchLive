@@ -1,4 +1,5 @@
 #!/bin/bash
+
 kafka_version="3.6.1"
 kafka_scala_version="2.13"
 kafka_dir="kafka_${kafka_scala_version}-${kafka_version}"
@@ -6,8 +7,8 @@ kafka_dir="kafka_${kafka_scala_version}-${kafka_version}"
 # Start Zookeeper server
 echo "Starting Zookeeper server..."
 cd "$HOME/${kafka_dir}" || exit
-bin/zookeeper-server-start.sh config/zookeeper.properties &
+bin/zookeeper-server-start.sh config/zookeeper.properties > /dev/null 2>&1 &
 
 # Start Kafka server
 echo "Starting Kafka server..."
-bin/kafka-server-start.sh config/server.properties &
+bin/kafka-server-start.sh config/server.properties > /dev/null 2>&1 &
