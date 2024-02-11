@@ -49,6 +49,7 @@ This table lists various resources along with their types and locations.
 | fsm-machine                           | Virtual machine     | France Central |
 | fsm-bastion                           | Bastion             | France Central |
 
+![Image Description](../doc/images/resource.png)
 
 ## Azure Bastion and Virtual Machine Setup Documentation
 
@@ -129,4 +130,3 @@ The Bastion host is set up using the public IP address created for the virtual m
 The Linux virtual machine is configured with the specified settings, where to run the app
 
 
-![Image Description](../doc/images/resource.png)
