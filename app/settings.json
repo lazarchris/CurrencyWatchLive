@@ -25,6 +25,9 @@
         "port": 9092,
         "package_name": "org.apache.spark:spark-sql-kafka-0-10_2.12",
         "package_version": "3.5.0",
-        "spark_script_path": "./app/spark_streamer/spark_streamer.py"
+        "spark_script_path": "./app/spark_streamer/spark_streamer.py",
+        "output_path": "output_path",
+        "topic": "topic_currency_exch_rate"
+
     }
 }

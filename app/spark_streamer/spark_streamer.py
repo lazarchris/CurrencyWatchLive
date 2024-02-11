@@ -1,17 +1,18 @@
 import os
+import json
 from datetime import datetime
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col, concat_ws
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType
 
-class KafkaToTextFile:
+class SparkStreamer:
     """
     Class to read data from Kafka topic, parse JSON messages, and append to a text file using Apache Spark.
     """
 
     def __init__(self, kafka_bootstrap_servers, kafka_topic, output_path):
         """
-        Initialize KafkaToTextFile object.
+        Initialize SparkStreamer object.
 
         :param kafka_bootstrap_servers: Comma-separated list of Kafka bootstrap servers.
         :param kafka_topic: Kafka topic to subscribe to.
@@ -29,7 +30,7 @@ class KafkaToTextFile:
         :return: SparkSession object.
         """
         return SparkSession.builder \
-            .appName("KafkaToTextFile") \
+            .appName("SparkStreamer") \
             .getOrCreate()
 
     def _read_from_kafka(self):
@@ -90,9 +91,28 @@ class KafkaToTextFile:
         parsed_df.writeStream.foreachBatch(self._write_to_text_file).start().awaitTermination()
 
 if __name__ == "__main__":
-    kafka_bootstrap_servers = "localhost:9092"
-    kafka_topic = "topic_currency_exch_rate"
-    output_path = "output_text"  # Output folder
+    settings_file_path = "./app/settings.json"
 
-    kafka_to_text_file = KafkaToTextFile(kafka_bootstrap_servers, kafka_topic, output_path)
+    # Check if the settings file exists
+    if not os.path.exists(settings_file_path):
+        print("Error: settings file not found.")
+        exit(1)
+
+    try:
+        # Load settings from JSON file
+        with open(settings_file_path, "r") as f:
+            settings = json.load(f)
+    except Exception as e:
+        print("Error:", e)
+        exit(1)
+
+    # Extract Kafka settings
+    kafka_settings = settings.get("kafka", {})
+    kafka_bootstrap_servers = f"{kafka_settings.get('host')}:{kafka_settings.get('port')}"
+    kafka_topic = kafka_settings.get("topic")
+
+    # Initialize SparkStreamer object
+    kafka_to_text_file = SparkStreamer(kafka_bootstrap_servers, kafka_topic, "output_text")  # Assuming output_path is fixed as "output_text"
+    
+    # Process Kafka messages
     kafka_to_text_file.process_kafka_to_text_file()
