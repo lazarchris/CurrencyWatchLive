@@ -1,7 +1,6 @@
 # CurrencyWatch Application Documentation
-The CurrencyWatch application is designed to extract currency conversion rates in real-time. It utilizes various components such as Kafka for message queuing, Spark Streaming for real-time data processing, and Docker for containerization.
+The CurrencyWatch application is designed to extract currency conversion rates in real-time. It utilizes various components such as Kafka for message queuing, Spark Streaming for real-time data processing, and Docker for containerization(indented for action.yaml).
 
-Thank you for providing that information. I'll update the documentation to include the directory where the conversion rates are written.
 
 ## Directory Structure
 
@@ -68,11 +67,18 @@ CurrencyWatchLive/
 ## Usage
 
 1. Ensure that Docker and Terraform are installed on your system.
-2. Install the dependencies using `scripts/install-dependencies.sh`.
-3. Start the Kafka broker using `scripts/start_broker.sh`.
-4. Run the CurrencyWatch application using `start-app.sh`.
+2. Install the dependencies using 
+
+`scripts/install-dependencies.sh`.
+3. Start the Kafka broker using 
+
+`scripts/start_broker.sh`.
+4. Run the CurrencyWatch application using 
+
+`start-app.sh`.
 5. Monitor currency conversion rates in real-time.
-6. Find the output conversion rates in the `output_text/` directory.
+6. Find the output conversion rates in the 
+`output_text/` directory.
 
 ## To start the program, follow these steps:
 
