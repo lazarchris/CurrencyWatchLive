@@ -1,7 +1,7 @@
 venv/
 app/kafka_publisher/__pycache__/
 app/kafka_publisher/api/__pycache__/
-output_csv/
+output_text/
 checkpoint_csv/
 terraform/.terraform
 .terraform*

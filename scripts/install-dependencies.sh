@@ -42,6 +42,9 @@ else
     echo "Extracting Kafka archive..."
     tar -xzf "$HOME/${kafka_tar_file}" -C "$HOME/"
 
+
+    pip install pyspark
+
     # Mark dependencies as installed
     echo "Dependencies installed: ok" > "$dependencies_installed"
 fi
