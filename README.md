@@ -1,5 +1,5 @@
-# CurrencyWatch Application Documentation
-The CurrencyWatch application is designed to extract currency conversion rates in real-time. It utilizes various components such as Kafka for message queuing, Spark Streaming for real-time data processing, and Docker for containerization(indented for action.yaml).
+# CurrencyWatchLive
+The CurrencyWatchLive application is designed to extract currency conversion rates in real-time. It utilizes various components such as Kafka for message queuing, Spark Streaming for real-time data processing, and Docker for containerization(indented for action.yaml).
 
 
 ## Prequisties
@@ -7,7 +7,7 @@ The CurrencyWatch application is designed to extract currency conversion rates i
 1. **Install az cli**
 2. **Install the dependencies** using `scripts/install-dependencies.sh`.
 3. **Start the Kafka broker** using `scripts/start_broker.sh`.
-4. **Run the CurrencyWatch application** using `start-app.sh`.
+4. **Run the CurrencyWatchLive application** using `start-app.sh`.
 5. **Monitor currency conversion rates** in real-time.
 6. **Find the output conversion rates** in the `output_text/` directory.
 
@@ -73,7 +73,7 @@ The CurrencyWatch application is designed to extract currency conversion rates i
 
 - **scripts/**: Contains shell scripts for installing dependencies and starting the broker.
 
-- **start-app.sh**: Shell script to start the CurrencyWatch application.
+- **start-app.sh**: Shell script to start the CurrencyWatchLive application.
 
 - **terraform/**: Terraform configuration files for deploying infrastructure on the cloud.
   - **bastion.tf**: Configuration for setting up a bastion host.
@@ -89,33 +89,33 @@ The CurrencyWatch application is designed to extract currency conversion rates i
 
 ### Design Explanation
 
-The CurrencyWatch application, running on an Azure Cloud VM, consists of several components working together:
+The CurrencyWatchLive application, running on an Azure Cloud VM, consists of several components working together:
 
 1. **Currency API**:
    - This component represents the external service or API from which the application fetches currency conversion rates.
    - The Currency API may be hosted externally and accessed via HTTP requests from Azure VM.
 
 2. **Kafka Broker**:
-   - The Kafka Broker acts as an intermediary between the Currency API and the CurrencyWatch application.
+   - The Kafka Broker acts as an intermediary between the Currency API and the CurrencyWatchLive application.
    - The Currency API sends currency conversion rate data to the Kafka Broker.
-   - The Kafka Broker stores this data temporarily and makes it available for consumption by the CurrencyWatch application.
+   - The Kafka Broker stores this data temporarily and makes it available for consumption by the CurrencyWatchLive application.
 
-3. **CurrencyWatch Application**:
+3. **CurrencyWatchLive Application**:
    - This is the main application running on an Azure Cloud VM.
    - It consists of two main components:
       - **Kafka Topic Producer**: Responsible for publishing currency conversion rate data to a Kafka topic. It fetches data from the Currency API and sends it to the specified Kafka topic.
       - **Spark Stream Consumer**: Consumes currency conversion rate data from the Kafka topic using Apache Spark Streaming. It processes the incoming data in real-time, monitoring currency conversion rates continuously.
 
 4. **Output Text Directory**:
-   - The CurrencyWatch Application writes the output, i.e., the monitored currency conversion rates, to the VM's HDD.
+   - The CurrencyWatchLive Application writes the output, i.e., the monitored currency conversion rates, to the VM's HDD.
    - It may write this data in the form of text files to a specific directory on the VM's local storage.
-   - This directory could be any location accessible by the CurrencyWatch Application on the VM's filesystem.
+   - This directory could be any location accessible by the CurrencyWatchLive Application on the VM's filesystem.
 
 5. **Azure Cloud VM**:
-   - The entire application, including the CurrencyWatch Application, runs on a virtual machine hosted on the Azure cloud platform.
+   - The entire application, including the CurrencyWatchLive Application, runs on a virtual machine hosted on the Azure cloud platform.
    - The VM provides the necessary compute resources and storage for running and storing the application and its output.
 
-This design is used for processing and monitoring of currency conversion rate data, with the Currency API providing the initial data source, the Kafka Broker facilitating communication between components, and the CurrencyWatch Application performing real-time monitoring and output generation.
+This design is used for processing and monitoring of currency conversion rate data, with the Currency API providing the initial data source, the Kafka Broker facilitating communication between components, and the CurrencyWatchLive Application performing real-time monitoring and output generation.
 
 ## Result
 ### App starting on the virtual machine on azure cloud
@@ -143,3 +143,6 @@ Ensure that you have the necessary permissions and configurations set up in your
 2. Implement unit tests and actions.yaml
 3. Write output to azure storage
 
+# Author
+Christy Lazar
+christylazarac@gmail.com
